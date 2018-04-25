@@ -3,6 +3,7 @@ import db from '../firebase';
 import { connect } from 'react-redux';
 import { updateChat } from '../actions';
 import '../assets/css/chat.css';
+import InputMessage from './input-message';
 
 class Chat extends Component {
     componentDidMount(){
@@ -11,24 +12,40 @@ class Chat extends Component {
         })
     }
 
+    componentDidUpdate(){
+        this.refs.chatBottom.scrollIntoView();
+    }
+
+    scrollChat(){
+        this.refs.chatBottom.scrollIntoView();
+    }
+
     render(){
         console.log('Chat Log: ', this.props.log);
 
-        const messages = this.props.log.map((msg, index) => {
-            return (
-                <p key={index}>
-                    <b>{msg.author}: </b>
-                    <span>{msg.message}</span>
+        const messages = [];
+
+        for(let [k, v] of Object.entries(this.props.log)){
+            const message = (
+                <p key={k}>
+                    <b>{v.author}</b>
+                    <span>{v.message}</span>
                 </p>
             )
-        })
+
+            messages.push(message);
+        }
+
+        console.log('REF: ', this.refs)
 
         return (
             <div className="container chat">
                 <h1 className="center">Chat Room</h1>
-                <div className="chat-container messages">
+                <div className="messages">
                     {messages}
+                    <div ref="chatBottom" style={{float: "left", clear: "both"}}></div>
                 </div>
+                <InputMessage/>
             </div>
         )
     }
